@@ -20,7 +20,7 @@ module.exports = {
             return(7300 * value);
         }
     },
-    
+
     saveAmount : (...args) => {
 
         const goalAmount = args[0];
@@ -28,8 +28,21 @@ module.exports = {
 
         return (goalAmount - usingAmount);
     
-    }
-    
+    },
 
-    
+    electStep : (value) =>{
+        if(value<=100){
+            return 1;
+        }else if(value <= 200){
+            return 2;
+        }else if(value <= 300){
+            return 3;
+        }else if(value <= 400){
+            return 4;
+        }else if(value <= 500){
+            return 5;
+        }else{
+            return 6;
+        }
+    }
 }
