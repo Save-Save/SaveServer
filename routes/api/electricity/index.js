@@ -9,6 +9,7 @@ const fee = require('../../../module/fee');
 router.get('/', async (req, res, next) => {
     let date =  req.query.searchDate;
     let totalElect;
+    let totalElectPrevious
 
     if(!date){
         res.status(400).send({
@@ -25,7 +26,7 @@ router.get('/', async (req, res, next) => {
     let showResult = await db.queryParamArr(showQuery,[1]);
     
 
-    //매달 쓴 전기양
+    //매달 쓴 전기량
     let electQuery = `
     SELECT
         sum(election.usage) as totalElect
@@ -33,25 +34,38 @@ router.get('/', async (req, res, next) => {
     WHERE election.user_idx = ? AND write_time like ?
     `;
     let electResult =  await db.queryParamArr(electQuery, [1,date.concat('%')]);
-    console.log(electResult);
     
+    let momentObj = moment(date,'YYYY-MM');
+    momentObj = momentObj.subtract(1,'months').format('YYYY-MM');
+
+    let electTemp = await db.queryParamArr(electQuery,[1,momentObj.concat('%')]);
+    console.log(electTemp[0].totalElect);
+
+
     if(!electResult){
         totalElect = 0;
     }else{
         totalElect = electResult[0].totalElect;
     }
-    let saveAmount = fee.saveAmount(showResult[0].elect_goal,electResult[0].totalElect)
+    if(!electTemp){
+        totalElectPrevious = 0;
+    }else{
+        totalElectPrevious = electTemp[0].totalElect;
+    }
+
+
+    let saveAmount = fee.saveAmountElect(totalElectPrevious,totalElect);
     let savePrice = fee.electfee(saveAmount);
 
     let result = {
         electDday : showResult[0].elect_day,
-        monthUsage : totalElect,
+        monthUsage : totalElect.toFixed(0),
         monthUsagePrice : fee.electfee(electResult[0].totalElect),
         stepElectricity : fee.electStep(electResult[0].totalElect),
-        saveAmount : saveAmount,
-        savePrice : savePrice,
-        sameEnvirAmount : 110 ,
-        sameEnvirPrice : fee.electfee(110)
+        saveAmount : saveAmount.toFixed(0),
+        savePrice : savePrice.toFixed(0),
+        predictionAmount : ((1.18/1.12)*totalElectPrevious).toFixed(0),
+        predictionPrice : (fee.electfee((1.18/1.12)*totalElectPrevious)).toFixed(0)
         
     }
 
@@ -69,6 +83,8 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.post('/',)
+router.post('/',async(req,res,next)=>{
+
+});
 
 module.exports = router;
