@@ -49,7 +49,9 @@ router.get('/', async (req, res, next) => {
         monthUsagePrice : fee.electfee(electResult[0].totalElect),
         stepElectricity : fee.electStep(electResult[0].totalElect),
         saveAmount : saveAmount,
-        savePrice : savePrice 
+        savePrice : savePrice,
+        sameEnvirAmount : 110 ,
+        sameEnvirPrice : fee.electfee(110)
         
     }
 
@@ -65,10 +67,8 @@ router.get('/', async (req, res, next) => {
             data : result
         })
     }
-
-
-
-
 });
+
+router.post('/',)
 
 module.exports = router;
