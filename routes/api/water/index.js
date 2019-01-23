@@ -31,6 +31,11 @@ router.get('/', async(req, res, next) => {
     `;
     let waterResult = await db.queryParamArr(waterQuery,[1,date.concat('%')]);
 
+    if(!waterResult){
+        res.status(500).send({
+            message:"INTERNER SERVER ERROR"
+        })
+    }
     let momentObj = moment(date,'YYYY-MM');
     let month = moment(date,'MM');
     let previousMonth = momentObj.subtract(1,'months').format('MM');
@@ -76,6 +81,56 @@ router.get('/', async(req, res, next) => {
     })
 
 });
+
+router.post('/',async (req,res)=>{
+    let goal = req.body.goal;
+
+    if(!goal){
+        res.status(400).send({
+            message : "목표량이 입력되지 않음"
+        });
+    }
+
+    let userQuery = `
+    SELECT
+        water_goal, state_water, water_day
+    FROM
+        user
+    WHERE user_idx = ?`;
+    let userResult = await db.queryParamArr(userQuery,[1]);
+
+    if(!userResult){
+        res.status(500).send({
+            message:"INTERNAL SERVER ERROR"
+        });
+    }
+
+
+
+    if(userResult[0].state_water === 0){
+        console.log(333)
+        let userUpdate = `
+        UPDATE user 
+        SET water_goal=?, state_water=?
+        WHERE user_idx = ?
+        `;
+        let userUpdateResult = await db.queryParamArr(userUpdate,[goal,1,1]);
+        if(!userUpdateResult){
+            res.status(500).send({
+                message:"INTERNAL SERVER ERROR"
+            });
+        }
+        
+        res.status(201).send({
+        message:"목표 변경하기 성공"
+    });
+    }else{
+        console.log(111)
+        res.status(400).send({
+            message : "이미 목표를 설정함"
+        })
+    }
+})
 
 
 
