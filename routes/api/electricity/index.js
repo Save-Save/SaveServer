@@ -38,6 +38,7 @@ router.get('/', async (req, res, next) => {
     let momentObj = moment(date,'YYYY-MM');
     momentObj = momentObj.subtract(1,'months').format('YYYY-MM');
 
+    //전달 쓴 전기량
     let electTemp = await db.queryParamArr(electQuery,[1,momentObj.concat('%')]);
     console.log(electTemp[0].totalElect);
 
@@ -55,8 +56,11 @@ router.get('/', async (req, res, next) => {
 
 
     let saveAmount = fee.saveAmountElect(totalElectPrevious,totalElect);
+    if(saveAmount<=0){
+        saveAmount = 0;
+    }
     let savePrice = fee.electfee(saveAmount);
-
+    
     let result = {
         electDday : showResult[0].elect_day,
         monthUsage : totalElect.toFixed(0),
@@ -83,8 +87,59 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.post('/',async(req,res,next)=>{
+router.post('/',async(req,res)=>{
+    let goal = req.body.goal;
+    
+    if(!goal){
 
+        res.status(400).send({
+
+            message:"목표량이 입력되지 않음"
+        });
+
+    }
+    let userQuery = `
+    SELECT
+        elect_goal, state_elect, elect_day
+    FROM
+        user
+    WHERE user_idx = ?`;
+    let userResult = await db.queryParamArr(userQuery,[1]);
+
+    if(!userResult){
+        res.status(500).send({
+            message:"INTERNAL SERVER ERROR"
+        });
+    }
+
+
+
+
+
+    if(userResult[0].state_elect === 0){
+        console.log(333)
+        let userUpdate = `
+        UPDATE user 
+        SET elect_goal=?, state_elect=?
+        WHERE user_idx = ?
+        `;
+        let userUpdateResult = await db.queryParamArr(userUpdate,[goal,1,1]);
+        if(!userUpdateResult){
+            res.status(500).send({
+                message:"INTERNAL SERVER ERROR"
+            });
+        }
+        
+        res.status(201).send({
+        message:"목표 변경하기 성공"
+    });
+    }else{
+        console.log(111)
+        res.status(400).send({
+            message : "이미 목표를 설정함"
+        })
+    }
+    
 });
 
 module.exports = router;
