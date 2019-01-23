@@ -1,6 +1,17 @@
 const express = require('express');
 const router = express.Router();
 
+//라우터 연결
+const mainRouter = require('./main/index');
+router.use('/main',mainRouter);
+
+const electRouter = require('./electricity/index');
+router.use('/electricity',electRouter);
+
+const waterRouter = require('./water/index');
+router.use('/water',waterRouter);
+
+
 /* GET home page. */
 router.get('/', (req, res, next) => {
     res.render('index', { title: 'Express' });
