@@ -74,6 +74,9 @@ router.get('/', async (req, res, next) => {
     console.log(tempWater);
     console.log(savePrice);
 
+    if(savePrice<0){ // 절약된 게 없으면 0으로 처리
+        savePrice = 0;
+    }
 
 
 

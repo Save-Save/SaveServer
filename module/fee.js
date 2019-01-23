@@ -23,7 +23,7 @@ module.exports = {
 
     saveAmount : (...args) => {
 
-        const goalAmount = args[0];
+        const goalAmount = args[0];// goal이 아닌 동환경 으로 바꿔야 한다.
         const usingAmount = args[1];
 
         return (goalAmount - usingAmount);
