@@ -11,6 +11,8 @@ router.use('/electricity',electRouter);
 const waterRouter = require('./water/index');
 router.use('/water',waterRouter);
 
+const useRouter = require('./usage/index');
+router.use('/usage',useRouter);
 
 /* GET home page. */
 router.get('/', (req, res, next) => {
