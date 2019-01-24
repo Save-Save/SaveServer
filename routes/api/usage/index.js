@@ -22,8 +22,8 @@ router.delete('/',async(req,res)=>{
     FROM water 
     WHERE write_time like ? AND user_idx = ?
     `
-    let deleteResult = await db.queryParamArr(deleteQuery,[date.concat("-1%"),2]);
-    let deleteWaterResult = await db.queryParamArr(deleteWaterQuery,[date.concat("-1%"),2]);
+    let deleteResult = await db.queryParamArr(deleteQuery,[date.concat("-1%"), 1]);
+    let deleteWaterResult = await db.queryParamArr(deleteWaterQuery,[date.concat("-1%"),1]);
 
     if(!deleteResult || !deleteWaterResult){
         res.status(500).send({
