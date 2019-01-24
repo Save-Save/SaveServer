@@ -64,7 +64,7 @@ router.get('/', async (req, res, next) => {
     let result = {
         electDday : showResult[0].elect_day,
         monthUsage : totalElect.toFixed(0),
-        monthUsagePrice : fee.electfee(electResult[0].totalElect),
+        monthUsagePrice : fee.electfee(electResult[0].totalElect).toFixed(0),
         stepElectricity : fee.electStep(electResult[0].totalElect),
         saveAmount : saveAmount.toFixed(0),
         savePrice : savePrice.toFixed(0),
