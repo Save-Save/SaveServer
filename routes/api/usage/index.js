@@ -10,6 +10,8 @@ router.delete('/',async(req,res)=>{
     console.log(date);
 
 
+    //목표량이랑 사용량 지우기
+    //업데이트 1을 0으로 업데이트 해주기
 
     let deleteQuery = `
     DELETE 
@@ -22,10 +24,15 @@ router.delete('/',async(req,res)=>{
     FROM water 
     WHERE write_time like ? AND user_idx = ?
     `
-    let deleteResult = await db.queryParamArr(deleteQuery,[date.concat("-1%"), 1]);
-    let deleteWaterResult = await db.queryParamArr(deleteWaterQuery,[date.concat("-1%"),1]);
-
-    if(!deleteResult || !deleteWaterResult){
+    let updateQuery =  `
+    UPDATE user
+    SET elect_goal=?, water_goal=?, state_elect=?,state_water=?
+    WHERE user_idx=?
+    `
+    let deleteResult = await db.queryParamArr(deleteQuery,[date.concat("-2%"), 1]);
+    let deleteWaterResult = await db.queryParamArr(deleteWaterQuery,[date.concat("-2%"),1]);
+    let updateResult = await db.queryParamArr(updateQuery,[0,0,0,0,1])
+    if(!deleteResult || !deleteWaterResult || !updateResult){
         res.status(500).send({
             message:"INTERNAL SEVER ERROR"
         });

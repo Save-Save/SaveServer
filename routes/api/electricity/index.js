@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../../../module/db');
 const moment = require('moment');
 const fee = require('../../../module/fee');
-//const serial = require('../../../module/serial');
+const serial = require('../../../module/serial');
 
 //전기상세요금 확인
 router.get('/', async (req, res, next) => {
@@ -11,7 +11,23 @@ router.get('/', async (req, res, next) => {
     let totalElect;
     let totalElectPrevious
 
-    //serial.serial();
+    let temp = await serial.serial();
+    if(temp.split(" ",2)[0]=="FA-0/Elect"){
+        //셀렉문 해와서 
+        let selectQuery = `
+        SELECT sum(election.usage) AS elecUsage
+        FROM election
+        WHERE user_idx = ? ORDER BY write_time DESC`;
+        let selectResult = await db.queryParamArr(selectQuery,[1]);
+        console.log(selectResult);
+        let updateAmount = temp.split(" ",2)[1]-selectResult[0].elecUsage;
+        console.log(updateAmount);
+        //실시간 양 업데이트
+        console.log(moment().format("YYYY-MM-DD HH:mm:ss"));
+        let updateQuery = `INSERT INTO election(election.usage,write_time,user_idx) VALUES (?,?,?)`;
+        let updateResult = await db.queryParamArr(updateQuery,[updateAmount,moment().format("YYYY-MM-DD HH:mm:ss"),1]);
+
+    }
     
     //데이터 업데이트 하는 부분 넣어야 함
 
