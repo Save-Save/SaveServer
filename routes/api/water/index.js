@@ -69,11 +69,11 @@ router.get('/', async(req, res, next) => {
     let result = {
         waterDday : showResult[0].water_day,
         monthUsage : waterResult[0].totalWater,
-        monthUsagePrice : fee.waterfee(waterResult[0].totalWater).toFixed(0),
-        saveAmount : saveAmount.toFixed(0),
-        savePrice : savePrice.toFixed(0),
-        predictionAmount : previousAmount.toFixed(0),
-        predictionPrice : previousPrice.toFixed(0)
+        monthUsagePrice : Number(fee.waterfee(waterResult[0].totalWater).toFixed(0)),
+        saveAmount : Number(saveAmount.toFixed(0)),
+        savePrice : Number(savePrice.toFixed(0)),
+        predictionAmount : Number(previousAmount.toFixed(0)),
+        predictionPrice : Number(previousPrice.toFixed(0))
     }
     res.status(200).send({
         message: "수도 요금 보기 성공",
