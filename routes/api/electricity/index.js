@@ -63,14 +63,13 @@ router.get('/', async (req, res, next) => {
     
     let result = {
         electDday : showResult[0].elect_day,
-        monthUsage : totalElect.toFixed(0),
-        monthUsagePrice : fee.electfee(electResult[0].totalElect).toFixed(0),
-        stepElectricity : fee.electStep(electResult[0].totalElect),
-        saveAmount : saveAmount.toFixed(0),
-        savePrice : savePrice.toFixed(0),
-        predictionAmount : ((1.18/1.12)*totalElectPrevious).toFixed(0),
-        predictionPrice : (fee.electfee((1.18/1.12)*totalElectPrevious)).toFixed(0)
-        
+        monthUsage : Number(totalElect.toFixed(0)),
+        monthUsagePrice : Number(fee.electfee(electResult[0].totalElect).toFixed(0)),
+        stepElectricity : Number(fee.electStep(electResult[0].totalElect)),
+        saveAmount : Number(saveAmount.toFixed(0)),
+        savePrice : Number(savePrice.toFixed(0)),
+        predictionAmount : Number(((1.18/1.12)*totalElectPrevious).toFixed(0)),
+        predictionPrice : Number((fee.electfee((1.18/1.12)*totalElectPrevious)).toFixed(0))
     }
 
     console.log(result);
