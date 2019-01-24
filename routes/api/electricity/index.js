@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../../../module/db');
 const moment = require('moment');
 const fee = require('../../../module/fee');
-const serial = require('../../../module/serial');
+//const serial = require('../../../module/serial');
 
 //전기상세요금 확인
 router.get('/', async (req, res, next) => {
