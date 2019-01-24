@@ -66,12 +66,16 @@ router.get('/', async(req, res, next) => {
     let savePrice = fee.waterfee(saveAmount);
     let previousPrice = fee.waterfee(previousAmount);
 
+    let monthUsage = waterResult[0].totalWater;
+    if(monthUsage=== null){
+        monthUsage = 0;
+    }
 
 
     let result = {
         waterDday : showResult[0].water_day,
-        monthUsage : waterResult[0].totalWater,
-        monthUsagePrice : Number(fee.waterfee(waterResult[0].totalWater).toFixed(0)),
+        monthUsage : monthUsage,
+        monthUsagePrice : Number(fee.waterfee(monthUsage).toFixed(0)),
         saveAmount : Number(saveAmount.toFixed(0)),
         savePrice : Number(savePrice.toFixed(0)),
         predictionAmount : Number(previousAmount.toFixed(0)),
