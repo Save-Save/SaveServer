@@ -3,9 +3,11 @@ const router = express.Router();
 const db = require('../../../module/db');
 const moment = require('moment');
 const fee = require('../../../module/fee');
+const SerialPort = require('serialport');
 
 
 router.get('/', async(req, res, next) => {
+    //const serialPo
     let date = req.query.searchDate;
     if(!date){
         res.status(400).send({

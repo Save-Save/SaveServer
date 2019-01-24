@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../../../module/db');
 const moment = require('moment');
 const fee = require('../../../module/fee');
-
+const SerialPort = require('serialport');
 
 //전기상세요금 확인
 router.get('/', async (req, res, next) => {
@@ -11,6 +11,18 @@ router.get('/', async (req, res, next) => {
     let totalElect;
     let totalElectPrevious
 
+    /*
+    let serialPort = new SerialPort('/dev/cu.usbmodem141201',{
+        baudrate: 9600
+    });
+
+    serialPort.on('open',function(){
+        console.log('port open. Data rate: ' + serialPort.baudRate);
+    });
+    serialPort.on('data',function(data){
+        console.log("Data");
+    });
+*/
     if(!date){
         res.status(400).send({
             message:"잘못된 날짜 요청"
@@ -19,12 +31,17 @@ router.get('/', async (req, res, next) => {
     //사용자의 목표량과 디데이 (전기에 대해서)
     let showQuery = `
     SELECT
-        elect_goal, elect_day
+        elect_goal, elect_day, state_elect
     FROM user
     WHERE user.user_idx = ?`;
 
     let showResult = await db.queryParamArr(showQuery,[1]);
-    
+    if(!showResult){
+        res.status(500).send({
+            message:"INTERNAL SERVER ERROR"
+        });
+    }
+    console.log(showResult);
 
     //매달 쓴 전기량
     let electQuery = `
@@ -69,21 +86,20 @@ router.get('/', async (req, res, next) => {
         saveAmount : Number(saveAmount.toFixed(0)),
         savePrice : Number(savePrice.toFixed(0)),
         predictionAmount : Number(((1.18/1.12)*totalElectPrevious).toFixed(0)),
-        predictionPrice : Number((fee.electfee((1.18/1.12)*totalElectPrevious)).toFixed(0))
+        predictionPrice : Number((fee.electfee((1.18/1.12)*totalElectPrevious)).toFixed(0)),
+        electGoal : Number((showResult[0].elect_goal).toFixed(0)),
+        electGoalPrice : Number(fee.electfee((1.18/1.12)*(showResult[0].elect_goal)).toFixed(0)),
+        statusGoal : showResult[0].state_elect
     }
 
     console.log(result);
 
-    if(!showResult){
-        res.status(500).send({
-            message:"INTERNAL SERVER ERROR"
-        })
-    }else{
-        res.status(200).send({
-            message:"전기요금 상세보기 성공",
-            data : result
-        })
-    }
+    
+    res.status(200).send({
+        message:"전기요금 상세보기 성공",
+        data : result
+    })
+    
 });
 
 router.post('/',async(req,res)=>{
