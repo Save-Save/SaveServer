@@ -9,6 +9,8 @@ router.delete('/',async(req,res)=>{
     let date = moment().format('YYYY-MM');
     console.log(date);
 
+
+
     let deleteQuery = `
     DELETE 
     FROM election 
@@ -20,8 +22,8 @@ router.delete('/',async(req,res)=>{
     FROM water 
     WHERE write_time like ? AND user_idx = ?
     `
-    let deleteResult = await db.queryParamArr(deleteQuery,[date.concat("%"),2]);
-    let deleteWaterResult = await db.queryParamArr(deleteWaterQuery,[date.concat("%"),2]);
+    let deleteResult = await db.queryParamArr(deleteQuery,[date.concat("-1%"),2]);
+    let deleteWaterResult = await db.queryParamArr(deleteWaterQuery,[date.concat("-1%"),2]);
 
     if(!deleteResult || !deleteWaterResult){
         res.status(500).send({
