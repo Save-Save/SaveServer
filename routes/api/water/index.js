@@ -116,7 +116,7 @@ router.post('/',async (req,res)=>{
 
 
 
-    if(userResult[0].state_water === 0){
+    if(userResult[0].state_water === 0 ||userResult[0].state_water === 1){
         console.log(333)
         let userUpdate = `
         UPDATE user 

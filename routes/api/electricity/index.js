@@ -52,12 +52,12 @@ router.get('/', async (req, res, next) => {
     console.log(electTemp[0].totalElect);
 
 
-    if(!electResult || electResult[0].totalElect === null){
+    if(electResult[0].totalElect === null){
         totalElect = 0;
     }else{
         totalElect = electResult[0].totalElect;
     }
-    if(!electTemp || electTemp[0].totalElect === null){
+    if(electTemp[0].totalElect === null){
         console.log(1111)
         totalElectPrevious = 0;
     }else{
@@ -86,8 +86,6 @@ router.get('/', async (req, res, next) => {
     }
 
     console.log(result);
-
-    
     res.status(200).send({
         message:"전기요금 상세보기 성공",
         data : result
@@ -124,7 +122,7 @@ router.post('/',async(req,res)=>{
 
 
 
-    if(userResult[0].state_elect === 0){
+    if(userResult[0].state_elect === 0 ||userResult[0].state_elect === 1 ){
         console.log(333)
         let userUpdate = `
         UPDATE user 
@@ -137,12 +135,10 @@ router.post('/',async(req,res)=>{
                 message:"INTERNAL SERVER ERROR"
             });
         }
-        
         res.status(201).send({
         message:"목표 변경하기 성공"
     });
     }else{
-        console.log(111)
         res.status(400).send({
             message : "이미 목표를 설정함"
         })
