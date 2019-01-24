@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../../../module/db');
 const moment = require('moment');
 const fee = require('../../../module/fee');
-const SerialPort = require('serialport');
+const serial = require('../../../module/serial');
 
 //전기상세요금 확인
 router.get('/', async (req, res, next) => {
@@ -11,18 +11,10 @@ router.get('/', async (req, res, next) => {
     let totalElect;
     let totalElectPrevious
 
-    /*
-    let serialPort = new SerialPort('/dev/cu.usbmodem141201',{
-        baudrate: 9600
-    });
+    //serial.serial();
+    
+    //데이터 업데이트 하는 부분 넣어야 함
 
-    serialPort.on('open',function(){
-        console.log('port open. Data rate: ' + serialPort.baudRate);
-    });
-    serialPort.on('data',function(data){
-        console.log("Data");
-    });
-*/
     if(!date){
         res.status(400).send({
             message:"잘못된 날짜 요청"
@@ -60,12 +52,13 @@ router.get('/', async (req, res, next) => {
     console.log(electTemp[0].totalElect);
 
 
-    if(!electResult){
+    if(!electResult || electResult[0].totalElect === null){
         totalElect = 0;
     }else{
         totalElect = electResult[0].totalElect;
     }
-    if(!electTemp){
+    if(!electTemp || electTemp[0].totalElect === null){
+        console.log(1111)
         totalElectPrevious = 0;
     }else{
         totalElectPrevious = electTemp[0].totalElect;
@@ -77,7 +70,7 @@ router.get('/', async (req, res, next) => {
         saveAmount = 0;
     }
     let savePrice = fee.electfee(saveAmount);
-    
+    console.log(Number(fee.electfee((1.18/1.12)*(showResult[0].elect_goal)).toFixed(0)));
     let result = {
         electDday : showResult[0].elect_day,
         monthUsage : Number(totalElect.toFixed(0)),
