@@ -18,7 +18,7 @@ router.get('/', async(req, res, next) => {
     //사용자의 목표량과 디데이 (수도에 대해서)
     let showQuery = `
     SELECT
-        water_goal, water_day
+        water_goal, water_day, state_water
     FROM user
     WHERE user.user_idx = ?`;
 
@@ -75,7 +75,10 @@ router.get('/', async(req, res, next) => {
         saveAmount : Number(saveAmount.toFixed(0)),
         savePrice : Number(savePrice.toFixed(0)),
         predictionAmount : Number(previousAmount.toFixed(0)),
-        predictionPrice : Number(previousPrice.toFixed(0))
+        predictionPrice : Number(previousPrice.toFixed(0)),
+        waterGoal : Number(showResult[0].water_goal),
+        waterGoalPrice : Number((fee.waterfee(showResult[0].water_goal)).toFixed(0)),
+        stateGoal: showResult[0].state_water
     }
     res.status(200).send({
         message: "수도 요금 보기 성공",
