@@ -108,8 +108,8 @@ router.get('/', async (req, res, next) => {
         userName : showResult[0].name,
         waterDday : showResult[0].water_day,
         electDday : showResult[0].elect_day,
-        electGoalPrice : fee.electfee(showResult[0].elect_goal),
-        waterGoalPrice : fee.waterfee(showResult[0].water_goal),
+        electGoalPrice : fee.electfee(showResult[0].elect_goal).toFixed(0),
+        waterGoalPrice : fee.waterfee(showResult[0].water_goal).toFixed(0),
         waterPrice : fee.waterfee(totalWater).toFixed(0),
         electPrice : fee.electfee(totalElect).toFixed(0),
         savePrice : savePrice.toFixed(0)
