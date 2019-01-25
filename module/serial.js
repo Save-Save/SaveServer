@@ -11,7 +11,7 @@ module.exports = {
             let parser = new Readline({ delimiter: '\r\n' });
             let tempArr = new Array();
             let result;
-            let serialPort = new SerialPort('/dev/tty.usbmodem141201');
+            let serialPort = new SerialPort('/dev/tty.usbmodem141101');
             serialPort.on('open',function(){
 
             console.log('port open. Data rate: ');

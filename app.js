@@ -4,9 +4,34 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
-
+const db = require("./module/db");
+const mqtt = require('./module/mqtt');
+const moment = require('moment');
+let arr = new Array();
 
 const indexRouter = require('./routes/index');
+
+setInterval( async function(){
+  let tempWater =  await mqtt.mqttFun();    
+  
+
+  console.log(tempWater);
+  let selectQuery = `
+  SELECT water.usage
+  FROM water
+  WHERE user_idx = ? ORDER BY write_time DESC `;
+  let selectResult = await db.queryParamArr(selectQuery,[1]);
+  if(selectResult[0].usage != tempWater||tempWater===0.0){
+  let updateQuery = `INSERT INTO water(water.usage,write_time,user_idx) VALUES (?,?,?)`;
+  let updateResult = await db.queryParamArr(updateQuery,[tempWater,moment().format("YYYY-MM-DD HH:mm:ss"),1]);
+  console.log(updateResult);
+  
+  
+  }
+},10000);
+
+
+
 
 const app = express();
 

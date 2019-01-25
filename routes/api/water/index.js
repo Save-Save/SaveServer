@@ -3,8 +3,8 @@ const router = express.Router();
 const db = require('../../../module/db');
 const moment = require('moment');
 const fee = require('../../../module/fee');
-const serial = require('../../../module/serial');
-
+//const serial = require('../../../module/serial');
+const mqtt = require('../../../module/mqtt');
 
 router.get('/', async(req, res, next) => {
     //const serialPo
@@ -14,24 +14,9 @@ router.get('/', async(req, res, next) => {
             message:"잘못된 날짜 요청"
         });
     }
-    let temp = await serial.serial();
-    if(temp.split(" ",2)[0]=="FA-0/Water"){
-        //셀렉문 해와서 
-        let selectQuery = `
-        SELECT sum(water.usage) AS waterUsage
-        FROM water
-        WHERE user_idx = ? ORDER BY write_time DESC`;
-        let selectResult = await db.queryParamArr(selectQuery,[1]);
-        console.log(selectResult);
-        let updateAmount = temp.split(" ",2)[1]-selectResult[0].waterUsage;
-        console.log(updateAmount);
-        //실시간 양 업데이트
-        console.log(moment().format("YYYY-MM-DD HH:mm:ss"));
-        let updateQuery = `INSERT INTO water(water.usage,write_time,user_idx) VALUES (?,?,?)`;
-        let updateResult = await db.queryParamArr(updateQuery,[updateAmount,moment().format("YYYY-MM-DD HH:mm:ss"),1]);
+    
 
-    }
-
+    
     //사용자의 목표량과 디데이 (수도에 대해서)
     let showQuery = `
     SELECT
