@@ -13,8 +13,7 @@ const indexRouter = require('./routes/index');
 
 setInterval( async function(){
   let tempWater =  await mqtt.mqttFun();    
-  
-
+  tempWater = Math.round(tempWater);
   console.log(tempWater);
   let selectQuery = `
   SELECT water.usage
